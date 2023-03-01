@@ -1,5 +1,5 @@
 {
-    "name": "DuckDNS IPV4 & IPV6 Updater",
+    "name": "dynv6 IPV4 & IPV6 Updater",
     "domains": ["duckdns_ipv4_ipv6"],
     "iot_class": "Cloud Polling"
 }

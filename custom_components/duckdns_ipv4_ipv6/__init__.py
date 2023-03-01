@@ -1,4 +1,4 @@
-"""Integrate with DuckDNS IPV4 and IPV6."""
+"""Integrate with dynv6 IPV4 and IPV6."""
 from asyncio import iscoroutinefunction
 from datetime import timedelta
 import logging
@@ -19,19 +19,20 @@ _LOGGER = logging.getLogger(__name__)
 
 ATTR_TXT = "txt"
 
-DOMAIN = "duckdns_ipv4_ipv6"
+DOMAIN = "dynv6"
 
 INTERVAL = timedelta(minutes=5)
 
 SERVICE_SET_TXT = "set_txt"
 
 CONF_HOSTNAME = "hostname"
-CONF_IPV4_MODE = "ipv4_mode"
-CONF_IPV6_MODE = "ipv6_mode"
+CONF_IPV4_MODE = "nameserver"
+CONF_IPV6_MODE = "nameserver"
 CONF_IPV4_RESOLVER = "ipv4_resolver"
 CONF_IPV6_RESOLVER = "ipv6_resolver"
 
-UPDATE_URL = "https://www.duckdns.org/update"
+UPDATE_URL = "http://dynv6.com/api/update"  
+# http://dynv6.com/api/update?hostname=<domain>&token=<username>&ipv4=<ipaddr> http://dynv6.com/api/update?hostname=<domain>&token=<username>&ipv6=<ip6addr>&ipv6prefix=<ip6lanprefix>
 DEFAULT_HOSTNAME = "myip.opendns.com"
 DEFAULT_IPV4_MODE = False
 DEFAULT_IPV6_MODE = False
@@ -46,7 +47,7 @@ CONFIG_SCHEMA = vol.Schema(
                 vol.Required(CONF_ACCESS_TOKEN): cv.string,
                 vol.Optional(CONF_HOSTNAME, default=DEFAULT_HOSTNAME): cv.string,
                 vol.Optional(CONF_IPV4_MODE, default=DEFAULT_IPV4_MODE): vol.Any(
-                    False, "duckdns", "nameserver"
+                    False, "dynv6", "nameserver"
                 ),
                 vol.Optional(CONF_IPV6_MODE, default=DEFAULT_IPV6_MODE): vol.Any(
                     False, "nameserver"
@@ -71,7 +72,7 @@ SERVICE_TXT_SCHEMA = vol.Schema(
 
 
 async def async_setup(hass, config):
-    """Initialize the DuckDNS component."""
+    """Initialize the dynv6 component."""
     domain = config[DOMAIN][CONF_DOMAIN]
     token = config[DOMAIN][CONF_ACCESS_TOKEN]
     hostname = config[DOMAIN][CONF_HOSTNAME]
@@ -83,7 +84,7 @@ async def async_setup(hass, config):
     session = async_get_clientsession(hass)
 
     async def update_domain_interval(_now):
-        """Update the DuckDNS entry."""
+        """Update the dynv6 entry."""
         return await _prepare_update(
             session,
             domain,
@@ -105,8 +106,8 @@ async def async_setup(hass, config):
     async_track_time_interval_backoff(hass, update_domain_interval, intervals)
 
     async def update_domain_service(call):
-        """Update the DuckDNS entry."""
-        await _update_duckdns(session, domain, token, txt=call.data[ATTR_TXT])
+        """Update the dynv6 entry."""
+        await _update_dynv6(session, domain, token, txt=call.data[ATTR_TXT])
 
     hass.services.async_register(
         DOMAIN, SERVICE_SET_TXT, update_domain_service, schema=SERVICE_TXT_SCHEMA
@@ -118,7 +119,7 @@ async def async_setup(hass, config):
 _SENTINEL = object()
 
 
-async def _update_duckdns(
+async def _update_dynv6(
     session,
     domain,
     token,
@@ -128,7 +129,7 @@ async def _update_duckdns(
     txt=_SENTINEL,
     clear=False,
 ):
-    """Update DuckDNS."""
+    """Update dynv6."""
     params = {"domains": domain, "token": token}
 
     if txt is not _SENTINEL:
@@ -154,7 +155,7 @@ async def _update_duckdns(
         resp = await session.get(UPDATE_URL, params=params)
         body = await resp.text()
     except:
-        _LOGGER.warning(f"Unable to connect to DuckDNS to update '{domain}' domain")
+        _LOGGER.warning(f"Unable to connect to dynv6 to update '{domain}' domain")
         return False
 
     if body != "OK":
@@ -199,9 +200,9 @@ async def _prepare_update(
     ipv6_addr = None
     success = True
 
-    if ipv4_mode == "duckdns":
-        _LOGGER.debug(f"Updating IPV4 with 'duckdns' mode")
-        if not await _update_duckdns(session, domain, token):
+    if ipv4_mode == "dynv6":
+        _LOGGER.debug(f"Updating IPV4 with 'dynv6' mode")
+        if not await _update_dynv6(session, domain, token):
             success = False
 
     elif ipv4_mode == "nameserver":
@@ -214,7 +215,7 @@ async def _prepare_update(
 
     if ipv4_addr or ipv6_addr:
         _LOGGER.debug(f"Updating IPV4 and/or IPV6 in nameserver mode")
-        if not await _update_duckdns(
+        if not await _update_dynv6(
             session, domain, token, ipv4_addr=ipv4_addr, ipv6_addr=ipv6_addr
         ):
             success = False

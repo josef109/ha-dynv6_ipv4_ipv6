@@ -1,8 +1,8 @@
 {
-    "domain": "duckdns_ipv4_ipv6",
-    "name": "Duck DNS IPV4 and IPV6",
-    "documentation": "https://github.com/lfhohmann/ha-duckdns_ipv4_ipv6#readme",
-    "issue_tracker": "https://github.com/lfhohmann/ha-duckdns_ipv4_ipv6/issues",
+    "domain": "dynv6_ipv4_ipv6",
+    "name": "dynv6 IPV4 and IPV6",
+    "documentation": "https://github.com/lfhohmann/ha-dynv6_ipv4_ipv6#readme",
+    "issue_tracker": "https://github.com/lfhohmann/ha-dynv6_ipv4_ipv6/issues",
     "codeowners": [
       "@lfhohmann"
     ],

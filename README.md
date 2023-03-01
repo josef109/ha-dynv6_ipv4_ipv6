@@ -1,18 +1,18 @@
-[![License](https://img.shields.io/github/license/lfhohmann/ha-duckdns_ipv4_ipv6?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/github/license/lfhohmann/ha-dynv6_ipv4_ipv6?style=for-the-badge)](LICENSE)
 [![HACS Badge](https://img.shields.io/badge/HACS-Default-blue.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
 [![Maintainer](https://img.shields.io/badge/MAINTAINER-%40lfhohmann-blue?style=for-the-badge)](https://github.com/lfhohmann)
 [![Community](https://img.shields.io/badge/COMMUNITY-FORUM-success?style=for-the-badge)](https://community.home-assistant.io)
 
-# Home Assistant DuckDNS IPV4 and IPV6 updater
+# Home Assistant dynv6 IPV4 and IPV6 updater
 
-This is a custom component that can update both IPV4 and IPV6 entries of a [Duck DNS](https://www.duckdns.org/) subdomain, I developed this because the already integrated [Duck DNS Component](https://www.home-assistant.io/integrations/duckdns/) component is only able to update the IPV4 address over Duck DNS "autodetect mode" and I couldn't manage to get IPV6 working on the HassIO [Addon](https://github.com/home-assistant/hassio-addons/tree/master/duckdns). The code is pretty much a combination of the built-in [Duck DNS Component](https://www.home-assistant.io/integrations/duckdns/) and [DNS IP](https://www.home-assistant.io/integrations/dnsip/) with some extra features.
+This is a custom component that can update both IPV4 and IPV6 entries of a [Duck DNS](https://www.dynv6.org/) subdomain, I developed this because the already integrated [Duck DNS Component](https://www.home-assistant.io/integrations/dynv6/) component is only able to update the IPV4 address over Duck DNS "autodetect mode" and I couldn't manage to get IPV6 working on the HassIO [Addon](https://github.com/home-assistant/hassio-addons/tree/master/dynv6). The code is pretty much a combination of the built-in [Duck DNS Component](https://www.home-assistant.io/integrations/dynv6/) and [DNS IP](https://www.home-assistant.io/integrations/dnsip/) with some extra features.
 
 ## Features
 
 + Doesn't need Docker nor HassIO.
 + Can be easily installed on any Home Assistant instance.
 + Can update both IPV4 and IPV6 addresses.
-+ Three different IPV4 update modes: *(off, duckdns, nameserver)*.
++ Three different IPV4 update modes: *(off, dynv6, nameserver)*.
 + Two different IPV6 update modes: *(off, nameserver)*.
 + Optionally, the user can specify the nameservers and host that he/she wants to use to resolve the IP addresses.
 + A Service Call that allows setting the TXT entry.
@@ -40,7 +40,7 @@ This is a custom component that can update both IPV4 and IPV6 entries of a [Duck
 
 This is a regular HACS install from custom Github repository *(if you already know how to do it, you can probably skip the following steps)*
 
-1. Copy this Github repository **[URL](https://github.com/lfhohmann/ha-duckdns_ipv4_ipv6)**
+1. Copy this Github repository **[URL](https://github.com/lfhohmann/ha-dynv6_ipv4_ipv6)**
 1. Open **HACS** on your Home Assistant interface
 1. Open **Integrations**
 1. Open the **menu/options** *(3 dots on the right upper conner)*
@@ -53,12 +53,12 @@ This is a regular HACS install from custom Github repository *(if you already kn
 1. Click on **"Install this repository on HACS"**
 1. Click on **"Install"**
 1. **Restart** your Home Assistant
-1. **Done!** *(You still need to configure the component, check out the **[Configuration](https://github.com/lfhohmann/ha-duckdns_ipv4_ipv6#configuration)** section below)*
+1. **Done!** *(You still need to configure the component, check out the **[Configuration](https://github.com/lfhohmann/ha-dynv6_ipv4_ipv6#configuration)** section below)*
 
 ### 2. Install Method B: Manual
 
 1. Download the `custom_components` folder.
-2. Copy the `duckdns_ipv4_ipv6` directory to the `custom_components` directory of your homeassistant installation. The `custom_components` directory resides within your homeassistant configuration directory.
+2. Copy the `dynv6_ipv4_ipv6` directory to the `custom_components` directory of your homeassistant installation. The `custom_components` directory resides within your homeassistant configuration directory.
 **Note**: if the custom_components directory does not exist, you need to create it.
 After a correct installation, your configuration directory should look like the following.
 
@@ -66,7 +66,7 @@ After a correct installation, your configuration directory should look like the 
     └── ...
     └── configuration.yaml
     └── custom_components
-        └── duckdns_ipv4_ipv6
+        └── dynv6_ipv4_ipv6
             └── __init__.py
             └── manifest.json
             └── services.yaml
@@ -77,25 +77,25 @@ After a correct installation, your configuration directory should look like the 
 Once the component has been installed, you need to configure it in order to make it work.
 This component must be configured by manually editing the `configuration.yaml`:
 
-**Note**: In orther for this component to work, you must already have signed up for an account on DuckDNS, registered a subdomain and have a valid Access Token.
+**Note**: In orther for this component to work, you must already have signed up for an account on dynv6, registered a subdomain and have a valid Access Token.
 
 #### A. Configuration example
 
 ```yaml
-duckdns_ipv4_ipv6:
+dynv6_ipv4_ipv6:
   access_token: YOUR_ACCESS_TOKEN
   domain: YOUR_SUBDOMAIN
-  ipv4_mode: duckdns
+  ipv4_mode: dynv6
   ipv6_mode: nameserver
 ```
 
 #### B. Extended example
 
 ```yaml
-duckdns_ipv4_ipv6:
+dynv6_ipv4_ipv6:
   access_token: YOUR_ACCESS_TOKEN
   domain: YOUR_SUBDOMAIN
-  ipv4_mode: duckdns
+  ipv4_mode: dynv6
   ipv6_mode: nameserver
   hostname: "myip.opendns.com"
   ipv4_resolver: "208.67.222.222"
@@ -105,13 +105,13 @@ duckdns_ipv4_ipv6:
 ## Configuration Variables
 
 + **access_token:** (string)(Required)
-  + Your DuckDNS access token. Log in to the [DuckDNS website](https://www.duckdns.org/) and get one if you don't already have it.
+  + Your dynv6 access token. Log in to the [dynv6 website](https://www.dynv6.org/) and get one if you don't already have it.
 + **domain:** (string)(Required)
-  + Your duckdns subdomain *(Without the `.duckdns.org` suffix)*.
+  + Your dynv6 subdomain *(Without the `.dynv6.org` suffix)*.
 + **ipv4_mode:** (string)(Optional)
   + The method used to determine your external IPV4 address, options:
     + `"off"`: Will not update IPV4 address.
-    + `"duckdns"`: Will use DuckDNS "autodetect mode" to determine your IPV4 address during the update request *(This is the fatest option).*
+    + `"dynv6"`: Will use dynv6 "autodetect mode" to determine your IPV4 address during the update request *(This is the fatest option).*
     + `"nameserver"`: Will use the `hostname` and the `ipv4_resolver` values to determine your IPV4 address and then update it on Duck DNS.
   + Default value: `"off"`
 + **ipv6_mode:** (string)(Optional)
@@ -119,7 +119,7 @@ duckdns_ipv4_ipv6:
     + `"off"`: Will not update IPV6 address.
     + `"nameserver"`: Will use the `hostname` and the `ipv6_resolver` values to determine your IPV6 address and then update it on Duck DNS.
   + Default value: `"off"`
-  + **Note: There is no `"duckdns"` update method for IPV6 because Duck DNS does't provide one.**
+  + **Note: There is no `"dynv6"` update method for IPV6 because Duck DNS does't provide one.**
 + **hostname:** (string)(Optional)
   + The hostname to be used to perform the nameserver DNS query.
   + Default value: `"myip.opendns.com"`
@@ -179,7 +179,7 @@ You can't combine the `whoami.akamai.net` hostname with `216.239.32.10` resolver
 
 ### Set TXT
 
-Set the TXT record of your DuckDNS subdomain. *(This is the same service as the one provided via the integrated DuckDNS component)*
+Set the TXT record of your dynv6 subdomain. *(This is the same service as the one provided via the integrated dynv6 component)*
 
 | Service data attribute | Optional | Description |
 | ---------------------- | -------- | ----------- |
